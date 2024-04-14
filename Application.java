@@ -22,7 +22,7 @@ public class Application {
                 break;
             }
             if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && !(rV.isIndexesCreated())) {
-
+                //Need to build indexes for hash and array
                 rV.setIndexesCreated(true);
                 System.out.println("Program is ready and waiting for user command.");
             }
