@@ -1,5 +1,10 @@
+import java.util.Hashtable;
+import java.lang.StringBuilder;
+
 public class RecordRetriever {
     private boolean indexesCreated;
+    private Hashtable<Integer, StringBuilder> hashIndex;
+    private StringBuilder[] arrayIndex;
     public RecordRetriever() {
         this.indexesCreated = false;
     }
@@ -13,6 +18,9 @@ public class RecordRetriever {
     }
 
     public void initializeHashIndex() {
+        //A hash table entry should have two
+        //components (key k, value v), where k = RandomV value, and v = the record locations (file number and the offset at
+        //which the record begins within this file).
 
     }
 
