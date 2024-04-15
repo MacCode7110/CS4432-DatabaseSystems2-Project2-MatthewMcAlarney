@@ -47,6 +47,7 @@ public class RecordRetriever {
 
                 bytes.clear();
             }
+            fileInputStream.close();
         }
     }
 
