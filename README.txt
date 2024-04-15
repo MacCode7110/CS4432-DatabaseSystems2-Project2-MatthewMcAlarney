@@ -25,3 +25,8 @@ All the test commands I used produce the expected output.
 
 
 Section 3 - Additional Design Decisions
+
+1. Application class:
+    a. Implemented guard to make sure that the hash-based and array-based indexes are only created once.
+2. RecordRetriever class:
+    a.
