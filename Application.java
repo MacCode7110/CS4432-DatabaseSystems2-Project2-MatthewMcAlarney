@@ -22,8 +22,7 @@ public class Application {
                 break;
             }
             if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && !(rV.isIndexesCreated())) {
-                rV.initializeHashIndex();
-                rV.initializeArrayIndex();
+                rV.initializeIndexes();
                 rV.setIndexesCreated(true);
                 System.out.println("The hash-based and array-based indexes are built successfully. Program is ready and waiting for user command.");
             }
@@ -31,20 +30,20 @@ public class Application {
                 System.out.println("Indexes have already been created on Project2Dataset (RandomV).");
                 System.out.println("Program is ready and waiting for user command.");
             }
-            if (userInput.substring(36,45).equals("RandomV =")) {
-                //Case 1, Equality: SELECT * FROM Project2Dataset WHERE RandomV = v
-                rV.handleEqualityQueryLookup(Integer.parseInt(userInput.substring(46,userInput.length())));
+            if (userInput.startsWith("RandomV =", 36)) {
+                //Query Case 1, Equality: SELECT * FROM Project2Dataset WHERE RandomV = v
+                rV.handleEqualityQueryLookup(Integer.parseInt(userInput.substring(46)));
                 System.out.println("Program is ready and waiting for user command.");
             }
-            if (userInput.substring(36,45).equals("RandomV >")) {
-                //Case 2, Range: SELECT * FROM Project2Dataset WHERE RandomV > v1 AND RandomV < v2
+            if (userInput.startsWith("RandomV >", 36)) {
+                //Query Case 2, Range: SELECT * FROM Project2Dataset WHERE RandomV > v1 AND RandomV < v2
                 rV.handleRangeQueryLookup(Integer.parseInt(userInput.substring(46,(userInput.indexOf("A") - 1))),
-                        Integer.parseInt(userInput.substring(63, userInput.length())));
+                        Integer.parseInt(userInput.substring(63)));
                 System.out.println("Program is ready and waiting for user command.");
             }
-            if (userInput.substring(36,46).equals("RandomV !=")) {
-                //Case 3, Inequality: SELECT * FROM Project2Dataset WHERE RandomV != v
-                rV.handleInequalityQueryLookup(Integer.parseInt(userInput.substring(47, userInput.length())));
+            if (userInput.startsWith("RandomV !=", 36)) {
+                //Query Case 3, Inequality: SELECT * FROM Project2Dataset WHERE RandomV != v
+                rV.handleInequalityQueryLookup(Integer.parseInt(userInput.substring(47)));
                 System.out.println("Program is ready and waiting for user command.");
             }
         }
