@@ -92,23 +92,46 @@ public class RecordRetriever {
         return matchingRecords;
     }
 
+    public void printQueryResult(StringBuilder matchingRecords, String retrievalMethod, long queryTime, int numberOfFilesRead) {
+        System.out.println("Matching records: " + matchingRecords.toString() + "\n"
+                + retrievalMethod + "\n"
+                + "Time to answer query: " + queryTime + " milliseconds" + "\n"
+                + "Number of files read: " + numberOfFilesRead);
+    }
+
     public void handleEqualityQueryLookup(int v) {
+        long startTime = System.currentTimeMillis();
+        long endTime;
+        String retrievalMethod;
+        int numberOfFilesRead;
+        StringBuilder matchingRecords;
         if (this.indexesCreated) {
 
         } else {
 
         }
+        endTime = System.currentTimeMillis();
+        printQueryResult(matchingRecords, retrievalMethod, (endTime - startTime), numberOfFilesRead);
     }
 
     public void handleRangeQueryLookup(int v1, int v2) {
+        long startTime = System.currentTimeMillis();
+        long endTime;
+        String retrievalMethod;
+        int numberOfFilesRead;
+        StringBuilder matchingRecords;
         if (this.indexesCreated) {
 
         } else {
 
         }
+        endTime = System.currentTimeMillis();
+        printQueryResult(matchingRecords, retrievalMethod, (endTime - startTime), numberOfFilesRead);
     }
 
     public void handleInequalityQueryLookup(int v) {
-
+        long startTime = System.currentTimeMillis();
+        long endTime;
+        StringBuilder matchingRecords;
     }
 }
