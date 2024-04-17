@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -59,7 +58,7 @@ public class RecordRetriever {
         this.indexesCreated = true;
     }
 
-    public StringBuilder performTableScan(int v1, int v2, boolean isRangeQuery) throws IOException {
+    public StringBuilder performTableScan(int v1, int v2, boolean isRangeQuery, boolean isInequalityQuery) throws IOException {
         StringBuilder matchingRecords = new StringBuilder();
         String filePath;
         FileInputStream fileInputStream = null;
@@ -75,9 +74,17 @@ public class RecordRetriever {
                 randomVValue = Integer.parseInt(new String(Arrays.copyOfRange(record, j + 33, j + 37)));
 
                 if (isRangeQuery) {
-
+                    if (randomVValue > v1 && randomVValue < v2) {
+                        matchingRecords.append(new String(record)).append(",");
+                    }
+                } else if (isInequalityQuery) {
+                    if (randomVValue != v1) {
+                        matchingRecords.append(new String(record)).append(",");
+                    }
                 } else {
-
+                    if (randomVValue == v1) {
+                        matchingRecords.append(new String(record)).append(",");
+                    }
                 }
             }
         }
