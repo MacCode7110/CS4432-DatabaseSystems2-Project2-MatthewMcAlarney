@@ -1,3 +1,4 @@
+import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -12,10 +13,6 @@ public class RecordRetriever {
     private StringBuilder[] arrayIndex;
     public RecordRetriever() {
         this.indexesCreated = false;
-    }
-
-    public void setIndexesCreated(boolean indexesCreated) {
-        this.indexesCreated = indexesCreated;
     }
 
     public boolean isIndexesCreated() {
@@ -59,14 +56,49 @@ public class RecordRetriever {
             }
         }
         fileInputStream.close();
+        this.indexesCreated = true;
+    }
+
+    public StringBuilder performTableScan(int v1, int v2, boolean isRangeQuery) throws IOException {
+        StringBuilder matchingRecords = new StringBuilder();
+        String filePath;
+        FileInputStream fileInputStream = null;
+        byte[] record;
+        int randomVValue;
+        ByteBuffer bytes = ByteBuffer.allocate(40);
+        for (int i = 0; i < TOTALNUMBEROFFILES; i++) {
+            filePath = "Project2Dataset/F" + (i + 1) + ".txt";
+            fileInputStream = new FileInputStream(filePath);
+            for (int j = 0; j < 4000; j+=40) {
+                fileInputStream.getChannel().read(bytes, j);
+                record = bytes.array();
+                randomVValue = Integer.parseInt(new String(Arrays.copyOfRange(record, j + 33, j + 37)));
+
+                if (isRangeQuery) {
+
+                } else {
+
+                }
+            }
+        }
+        fileInputStream.close();
+        return matchingRecords;
     }
 
     public void handleEqualityQueryLookup(int v) {
+        if (this.indexesCreated) {
 
+        } else {
+
+        }
     }
 
     public void handleRangeQueryLookup(int v1, int v2) {
+        if (this.indexesCreated) {
 
+        } else {
+
+        }
     }
 
     public void handleInequalityQueryLookup(int v) {

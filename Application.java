@@ -23,7 +23,6 @@ public class Application {
             }
             if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && !(rV.isIndexesCreated())) {
                 rV.initializeIndexes();
-                rV.setIndexesCreated(true);
                 System.out.println("The hash-based and array-based indexes are built successfully. Program is ready and waiting for user command.");
             }
             if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && rV.isIndexesCreated()) {
