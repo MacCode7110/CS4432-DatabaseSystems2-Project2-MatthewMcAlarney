@@ -28,9 +28,13 @@ public class RecordRetriever {
         FileInputStream fileInputStream = null;
         int randomVValue;
         ByteBuffer bytes = ByteBuffer.allocate(40);
+
         for (int i = 0; i < TOTALNUMBEROFFILES; i++) {
+
             fileInputStream = new FileInputStream("Project2Dataset/F" + (i + 1) + ".txt");
+
             for (int j = 0; j < 4000; j+= 40) {
+
                 fileInputStream.getChannel().read(bytes, j);
                 randomVValue = Integer.parseInt(new String(Arrays.copyOfRange(bytes.array(), 33, 37)));
 
@@ -49,6 +53,7 @@ public class RecordRetriever {
                 bytes.clear();
             }
         }
+
         fileInputStream.close();
         this.indexesCreated = true;
     }
@@ -58,9 +63,13 @@ public class RecordRetriever {
         FileInputStream fileInputStream = null;
         int randomVValue;
         ByteBuffer bytes = ByteBuffer.allocate(40);
+
         for (int i = 0; i < TOTALNUMBEROFFILES; i++) {
+
             fileInputStream = new FileInputStream("Project2Dataset/F" + (i + 1) + ".txt");
+
             for (int j = 0; j < 4000; j+=40) {
+
                 fileInputStream.getChannel().read(bytes, j);
                 randomVValue = Integer.parseInt(new String(Arrays.copyOfRange(bytes.array(), 33, 37)));
 
@@ -81,6 +90,7 @@ public class RecordRetriever {
                 bytes.clear();
             }
         }
+
         fileInputStream.close();
         return matchingRecords;
     }
@@ -111,12 +121,17 @@ public class RecordRetriever {
         FileInputStream fileInputStream = null;
         ByteBuffer bytes = ByteBuffer.allocate(40);
         StringBuilder matchingRecords =  new StringBuilder();
+
         if (this.indexesCreated) {
+
             retrievalMethod = "Hash-based Index";
+
             if (this.hashIndex.containsKey(v)) {
+
                 recordLocations = this.hashIndex.get(v).toString().split(",");
 
                 for (int i = 0; i < recordLocations.length; i++) {
+
                     if (i > 0) {
                         previousFileNumber = fileNumber;
                     }
@@ -137,9 +152,11 @@ public class RecordRetriever {
                 fileInputStream.close();
             }
         } else {
+
             retrievalMethod = "Table Scan";
             numberOfFilesRead = 99;
             matchingRecords = performTableScan(v, -1, false, false);
+
         }
         endTime = System.currentTimeMillis();
         printQueryResult(matchingRecords, retrievalMethod, (endTime - startTime), numberOfFilesRead);
@@ -158,13 +175,19 @@ public class RecordRetriever {
         FileInputStream fileInputStream = null;
         ByteBuffer bytes = ByteBuffer.allocate(40);
         StringBuilder matchingRecords = new StringBuilder();
+
         if (this.indexesCreated) {
+
             retrievalMethod = "Array-based Index";
+
             if (v1 >= 1 && v1 <= 5000 && v2 >= 1 && v2 <= 5000) {
 
                 for (int i = v1; i < (v2 - 1); i++) {
+
                     if (!(this.arrayIndex[i] == null)) {
+
                         recordLocations = this.arrayIndex[i].toString().split(",");
+
                         for (int j = 0; j < recordLocations.length; j++) {
                             fileNumber = Integer.parseInt(recordLocations[j].substring(1, recordLocations[j].indexOf("-", 1)));
 
@@ -180,13 +203,17 @@ public class RecordRetriever {
                 }
 
                 entrySet = fileRecordMap.entrySet();
+
                 for (Map.Entry<Integer, TreeSet<Integer>> entry : entrySet) {
+
                     fileInputStream = new FileInputStream("Project2Dataset/F" + entry.getKey() + ".txt");
+
                     for (Integer i : entry.getValue()) {
                         fileInputStream.getChannel().read(bytes, i);
                         matchingRecords.append(new String(bytes.array())).append(",");
                         bytes.clear();
                     }
+
                     numberOfFilesRead++;
                 }
 
