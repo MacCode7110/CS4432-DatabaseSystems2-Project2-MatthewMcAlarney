@@ -91,7 +91,7 @@ public class RecordRetriever {
         if (matchingRecords.isEmpty()) {
             recordsResult = "None";
         } else {
-            recordsResult = matchingRecords.toString();
+            recordsResult = matchingRecords.substring(0, matchingRecords.length() - 1); //Remove the extra trailing comma from all matching records results.
         }
 
         System.out.println("Matching records: " + recordsResult + "\n"
