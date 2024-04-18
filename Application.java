@@ -24,8 +24,7 @@ public class Application {
             if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && !(rV.isIndexesCreated())) {
                 rV.initializeIndexes();
                 System.out.println("The hash-based and array-based indexes are built successfully. Program is ready and waiting for user command.");
-            }
-            if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && rV.isIndexesCreated()) {
+            } else if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && rV.isIndexesCreated()) {
                 System.out.println("Indexes have already been created on Project2Dataset (RandomV).");
                 System.out.println("Program is ready and waiting for user command.");
             }
@@ -37,7 +36,7 @@ public class Application {
             if (userInput.startsWith("RandomV >", 36)) {
                 //Query Case 2, Range: SELECT * FROM Project2Dataset WHERE RandomV > v1 AND RandomV < v2
                 rV.handleRangeQueryLookup(Integer.parseInt(userInput.substring(46,(userInput.indexOf("A") - 1))),
-                        Integer.parseInt(userInput.substring(63)));
+                        Integer.parseInt(userInput.substring(userInput.indexOf("<") + 2)));
                 System.out.println("Program is ready and waiting for user command.");
             }
             if (userInput.startsWith("RandomV !=", 36)) {

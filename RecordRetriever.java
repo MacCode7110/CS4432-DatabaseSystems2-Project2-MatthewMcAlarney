@@ -32,7 +32,7 @@ public class RecordRetriever {
             fileInputStream = new FileInputStream("Project2Dataset/F" + (i + 1) + ".txt");
             for (int j = 0; j < 4000; j+= 40) {
                 fileInputStream.getChannel().read(bytes, j);
-                randomVValue = Integer.parseInt(new String(Arrays.copyOfRange(bytes.array(), j + 33, j + 37)));
+                randomVValue = Integer.parseInt(new String(Arrays.copyOfRange(bytes.array(), 33, 37)));
 
                 if (!(this.hashIndex.containsKey(randomVValue))) {
                     this.hashIndex.put(randomVValue, new StringBuilder("F" + (i + 1) + "-" + j));
@@ -40,7 +40,7 @@ public class RecordRetriever {
                     this.hashIndex.put(randomVValue, hashIndex.get(randomVValue).append("," + "F").append(i + 1).append("-").append(j));
                 }
 
-                if (this.arrayIndex[randomVValue - 1].isEmpty()) {
+                if (this.arrayIndex[randomVValue - 1] == null) {
                     this.arrayIndex[randomVValue - 1] = new StringBuilder("F" + (i + 1) + "-" + j);
                 } else {
                     this.arrayIndex[randomVValue - 1] = this.arrayIndex[randomVValue - 1].append("," + "F").append(i + 1).append("-").append(j);
@@ -62,7 +62,7 @@ public class RecordRetriever {
             fileInputStream = new FileInputStream("Project2Dataset/F" + (i + 1) + ".txt");
             for (int j = 0; j < 4000; j+=40) {
                 fileInputStream.getChannel().read(bytes, j);
-                randomVValue = Integer.parseInt(new String(Arrays.copyOfRange(bytes.array(), j + 33, j + 37)));
+                randomVValue = Integer.parseInt(new String(Arrays.copyOfRange(bytes.array(), 33, 37)));
 
                 if (isRangeQuery) {
                     if (randomVValue > v1 && randomVValue < v2) {
@@ -88,7 +88,7 @@ public class RecordRetriever {
     public void printQueryResult(StringBuilder matchingRecords, String retrievalMethod, long queryTime, int numberOfFilesRead) {
         String recordsResult;
 
-        if (matchingRecords.isEmpty()) {
+        if (matchingRecords.length() == 0) {
             recordsResult = "None";
         } else {
             recordsResult = matchingRecords.substring(0, matchingRecords.length() - 1); //Remove the extra trailing comma from all matching records results.
@@ -163,7 +163,7 @@ public class RecordRetriever {
             if (v1 >= 1 && v1 <= 5000 && v2 >= 1 && v2 <= 5000) {
 
                 for (int i = v1; i < (v2 - 1); i++) {
-                    if (!(this.arrayIndex[i].isEmpty())) {
+                    if (!(this.arrayIndex[i] == null)) {
                         recordLocations = this.arrayIndex[i].toString().split(",");
                         for (int j = 0; j < recordLocations.length; j++) {
                             fileNumber = Integer.parseInt(recordLocations[j].substring(1, recordLocations[j].indexOf("-", 1)));
