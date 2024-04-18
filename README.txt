@@ -9,6 +9,7 @@ Section 1 - Code Compilation and Execution
             b. Open a terminal and navigate to the working directory of this project; the working directory is titled "CS4432-Project2-MatthewMcAlarney"
             c. Compile the application through typing the following command: javac Application.java
             d. Run the application using the following command: java Application
+                I. The application will output the first message, "Program is ready and waiting for user command."
             e. From here, all query command formats specified in the project document can be entered through command line. For each command that is entered, the application outputs a response message.
         2. Through IntelliJ:
             a. Download the project and open it in IntelliJ.
