@@ -1,10 +1,8 @@
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.Hashtable;
+import java.util.*;
 import java.lang.StringBuilder;
 import java.io.IOException;
 import java.io.FileInputStream;
-import java.util.TreeSet;
 
 public class RecordRetriever {
     private final static int TOTALNUMBEROFFILES = 99;
@@ -117,6 +115,7 @@ public class RecordRetriever {
             retrievalMethod = "Hash-based Index";
             if (this.hashIndex.containsKey(v)) {
                 recordLocations = this.hashIndex.get(v).toString().split(",");
+
                 for (int i = 0; i < recordLocations.length; i++) {
                     if (i > 0) {
                         previousFileNumber = fileNumber;
@@ -133,6 +132,7 @@ public class RecordRetriever {
                     matchingRecords.append(new String(bytes.array())).append(",");
                     bytes.clear();
                 }
+
                 assert fileInputStream != null;
                 fileInputStream.close();
             }
@@ -149,23 +149,49 @@ public class RecordRetriever {
         long startTime = System.currentTimeMillis();
         long endTime;
         String retrievalMethod;
-        Hashtable<Integer, TreeSet<Integer>> fileRecordMap;
-        int numberOfFilesRead = 0;
+        Hashtable<Integer, TreeSet<Integer>> fileRecordMap = new Hashtable<>();
+        TreeSet<Integer> placeholderTreeSet;
         String[] recordLocations;
-        int fileNumber = 1;
-        int previousFileNumber = 1;
+        Set<Map.Entry<Integer, TreeSet<Integer>>> entrySet;
+        int fileNumber;
+        int numberOfFilesRead = 0;
         FileInputStream fileInputStream = null;
         ByteBuffer bytes = ByteBuffer.allocate(40);
         StringBuilder matchingRecords = new StringBuilder();
         if (this.indexesCreated) {
             retrievalMethod = "Array-based Index";
             if (v1 >= 1 && v1 <= 5000 && v2 >= 1 && v2 <= 5000) {
+
                 for (int i = v1; i < (v2 - 1); i++) {
                     if (!(this.arrayIndex[i].isEmpty())) {
                         recordLocations = this.arrayIndex[i].toString().split(",");
-                        
+                        for (int j = 0; j < recordLocations.length; j++) {
+                            fileNumber = Integer.parseInt(recordLocations[j].substring(1, recordLocations[j].indexOf("-", 1)));
+
+                            if (!(fileRecordMap.containsKey(fileNumber))) {
+                                fileRecordMap.put(fileNumber, new TreeSet<>());
+                            }
+
+                            placeholderTreeSet = fileRecordMap.get(fileNumber);
+                            placeholderTreeSet.add(Integer.parseInt(recordLocations[j].substring((recordLocations[j].indexOf("-") + 1))));
+                            fileRecordMap.put(fileNumber, placeholderTreeSet);
+                        }
                     }
                 }
+
+                entrySet = fileRecordMap.entrySet();
+                for (Map.Entry<Integer, TreeSet<Integer>> entry : entrySet) {
+                    fileInputStream = new FileInputStream("Project2Dataset/F" + entry.getKey() + ".txt");
+                    for (Integer i : entry.getValue()) {
+                        fileInputStream.getChannel().read(bytes, i);
+                        matchingRecords.append(new String(bytes.array())).append(",");
+                        bytes.clear();
+                    }
+                    numberOfFilesRead++;
+                }
+
+                assert fileInputStream != null;
+                fileInputStream.close();
             }
         } else {
             retrievalMethod = "Table Scan";
