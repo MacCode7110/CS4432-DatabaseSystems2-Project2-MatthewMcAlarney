@@ -31,6 +31,20 @@ Below are a number of test cases that I created and ran to demonstrate the succe
 
 1. Equality-based queries on hash-index:
 
+    SELECT * FROM Project2Dataset WHERE RandomV = 2
+    Matching records: F56-Rec074, Name074, address074, 0002...,F61-Rec078, Name078, address078, 0002...
+    Hash-based Index
+    Time to answer query: 0 milliseconds
+    Number of files read: 2
+    Program is ready and waiting for user command.
+
+    SELECT * FROM Project2Dataset WHERE RandomV = 4
+    Matching records: F61-Rec030, Name030, address030, 0004...,F88-Rec042, Name042, address042, 0004...
+    Hash-based Index
+    Time to answer query: 0 milliseconds
+    Number of files read: 2
+    Program is ready and waiting for user command.
+
     SELECT * FROM Project2Dataset WHERE RandomV = 1
     Matching records: F10-Rec030, Name030, address030, 0001...
     Hash-based Index
@@ -205,6 +219,20 @@ Below are a number of test cases that I created and ran to demonstrate the succe
 Section 3 - Additional Design Decisions
 
 1. Application class:
-    a. Implemented guard to make sure that the hash-based and array-based indexes are only created once.
+    a. Implemented a guard to make sure that the hash-based and array-based indexes can only be created once using the following if-else ladder:
+        if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && !(rV.isIndexesInitialized())) {
+           rV.initializeIndexes();
+           System.out.println("The hash-based and array-based indexes are built successfully. Program is ready and waiting for user command.");
+        } else if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && rV.isIndexesInitialized()) {
+           System.out.println("Indexes have already been created on Project2Dataset (RandomV).");
+           System.out.println("Program is ready and waiting for user command.");
+        }
+    b. I included the option to exit the program. When the user types "Exit" or "EXIT" into the terminal or console session, the message "Program Exited." will be displayed and the program will terminate.
 2. RecordRetriever class:
-    a.
+    a. I included a few fields in addition to the hash-based and array-based indexes:
+        I. private final static int TOTALNUMBEROFFILES = 99 (a constant that is referenced when initializing the indexes and performing the full table scan)
+        II. private boolean indexesInitialized (a boolean exposed to the Application class indicating whether the hash-based and array-based indexes have been initialized)
+    b. Implemented printQueryResult method, which handles and prints the results of equality-based, range-based, and inequality-based queries.
+    c. For range-based queries, I leveraged the file numbers and corresponding record locations for randomV values through utilizing an additional local HashTable:
+        I. Hashtable<Integer, TreeSet<Integer>> fileRecordMap = new Hashtable<>()
+        II. This HashTable is used to group record locations for each file in the Project2Dataset directory; the Integer key is the file number, and the TreeSet<Integer> value is a tree set of record offsets (for the given file number key). The advantage of using a tree set to group record offsets with a particular file is that it stores unique elements and sorts those elements in ascending order. These TreeSet properties along with the structure of the encompassing local HashTable ensure that range-based queries are answered such that each relevant file is only read once (all relevant records in a file are extracted before moving onto the next file in the HashTable).
