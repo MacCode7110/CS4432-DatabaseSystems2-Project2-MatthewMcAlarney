@@ -4,21 +4,53 @@ import java.lang.StringBuilder;
 import java.io.IOException;
 import java.io.FileInputStream;
 
+/**
+ * Retrieves records from the Project2Dataset directory through index-lookups and full table scans
+ * Answers equality queries, range queries, and inequality queries
+ */
 public class RecordRetriever {
+
+    /**
+     * The total number of files in the Project2Dataset directory
+     */
     private final static int TOTALNUMBEROFFILES = 99;
-    private boolean indexesCreated;
+
+    /**
+     * A boolean that indicates whether the hash-based and array-based indexes are created
+     */
+    private boolean indexesInitialized;
+
+    /**
+     * The hash-based index serving equality queries
+     */
     private Hashtable<Integer, StringBuilder> hashIndex;
+
+    /**
+     * The array-based index serving range queries
+     */
     private StringBuilder[] arrayIndex;
+
+    /**
+     * RecordRetriever constructor that sets indexesCreated field to false
+     */
     public RecordRetriever() {
-        this.indexesCreated = false;
+        this.indexesInitialized = false;
     }
 
-    public boolean isIndexesCreated() {
-        return indexesCreated;
+    /**
+     * Returns a boolean indicating whether the hash-based and array-based indexes are initialized
+     * @return a boolean indicating whether the hash-based and array-based indexes are initialized
+     */
+    public boolean isIndexesInitialized() {
+        return indexesInitialized;
     }
 
+    /**
+     * Initializes the hash-based and array-based indexes.
+     * @throws IOException
+     */
     public void initializeIndexes() throws IOException {
-        //Note: A record location in a StringBuilder object is represented using the following notation: File Number (F + #) + "-" + Record Offset (starting index of the record location in the file).
+        //A record location in a StringBuilder object is represented using the following notation: File Number (F + #) + "-" + Record Offset (starting index of the record location in the file).
         //A comma is used to separate file numbers and corresponding record locations.
         //Example StringBuilder object contents:
         // a. F1-0,F1-40,F1-80
@@ -55,9 +87,18 @@ public class RecordRetriever {
         }
 
         fileInputStream.close();
-        this.indexesCreated = true;
+        this.indexesInitialized = true;
     }
 
+    /**
+     * Performs a full table scan on the files under the Project2Dataset directory.
+     * @param v1 the first specified randomV value (this is the value that is always used for equality-based queries and is the lower bound (exclusive) for range-based queries)
+     * @param v2 the second specified randomV value (this is the value that is always used as the upper bound (exclusive) for range-based queries. In the case of equality-based queries, -1 is passed to v2)
+     * @param isRangeQuery whether a range-based query is performed
+     * @param isInequalityQuery whether an inequality-based query is performed
+     * @return the records that fulfill the query
+     * @throws IOException
+     */
     public StringBuilder performTableScan(int v1, int v2, boolean isRangeQuery, boolean isInequalityQuery) throws IOException {
         StringBuilder matchingRecords = new StringBuilder();
         FileInputStream fileInputStream = null;
@@ -95,6 +136,13 @@ public class RecordRetriever {
         return matchingRecords;
     }
 
+    /**
+     * Prints the result of a query, which includes details about the records that fulfill the query, how the records were retrieved, how long it took to answer the query, and the number of distinct files read
+     * @param matchingRecords the records that fulfill the query
+     * @param retrievalMethod the method used to retrieve the records (index lookup vs. full table scan)
+     * @param queryTime total time needed to answer the query
+     * @param numberOfFilesRead the number of distinct files read
+     */
     public void printQueryResult(StringBuilder matchingRecords, String retrievalMethod, long queryTime, int numberOfFilesRead) {
         String recordsResult;
 
@@ -110,6 +158,11 @@ public class RecordRetriever {
                 + "Number of files read: " + numberOfFilesRead);
     }
 
+    /**
+     * Answers equality-based queries through a hash-based index lookup or full table scan
+     * @param v the randomV value to search for in the hash-based index or through a full table scan
+     * @throws IOException
+     */
     public void handleEqualityQueryLookup(int v) throws IOException {
         long startTime = System.currentTimeMillis();
         long endTime;
@@ -122,7 +175,7 @@ public class RecordRetriever {
         ByteBuffer bytes = ByteBuffer.allocate(40);
         StringBuilder matchingRecords =  new StringBuilder();
 
-        if (this.indexesCreated) {
+        if (this.indexesInitialized) {
 
             retrievalMethod = "Hash-based Index";
 
@@ -162,6 +215,12 @@ public class RecordRetriever {
         printQueryResult(matchingRecords, retrievalMethod, (endTime - startTime), numberOfFilesRead);
     }
 
+    /**
+     * Answers range-based queries through an array-based index lookup or full table scan
+     * @param v1 the first specified randomV value (this is the value that is used for the lower bound (exclusive) for range-based queries)
+     * @param v2 the second specified randomV value (this is the value that is used as the upper bound (exclusive) for range-based queries)
+     * @throws IOException
+     */
     public void handleRangeQueryLookup(int v1, int v2) throws IOException {
         long startTime = System.currentTimeMillis();
         long endTime;
@@ -176,7 +235,7 @@ public class RecordRetriever {
         ByteBuffer bytes = ByteBuffer.allocate(40);
         StringBuilder matchingRecords = new StringBuilder();
 
-        if (this.indexesCreated) {
+        if (this.indexesInitialized) {
 
             retrievalMethod = "Array-based Index";
 
@@ -229,6 +288,11 @@ public class RecordRetriever {
         printQueryResult(matchingRecords, retrievalMethod, (endTime - startTime), numberOfFilesRead);
     }
 
+    /**
+     * Answers inequality-based queries through a full table scan
+     * @param v the randomV value to search for through a full table scan
+     * @throws IOException
+     */
     public void handleInequalityQueryLookup(int v) throws IOException {
         long startTime = System.currentTimeMillis();
         long endTime;

@@ -21,10 +21,10 @@ public class Application {
                 System.out.println("Program Exited.");
                 break;
             }
-            if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && !(rV.isIndexesCreated())) {
+            if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && !(rV.isIndexesInitialized())) {
                 rV.initializeIndexes();
                 System.out.println("The hash-based and array-based indexes are built successfully. Program is ready and waiting for user command.");
-            } else if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && rV.isIndexesCreated()) {
+            } else if (userInput.equals("CREATE INDEX ON Project2Dataset (RandomV)") && rV.isIndexesInitialized()) {
                 System.out.println("Indexes have already been created on Project2Dataset (RandomV).");
                 System.out.println("Program is ready and waiting for user command.");
             }
